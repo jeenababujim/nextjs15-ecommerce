@@ -1,13 +1,18 @@
 // import { Product } from '@/lib/mocks'
+// "use client"
 import React from 'react'
 import Image from 'next/image'
 import { formatPrice } from '@/lib/utils'
 import { Product } from './generated/prisma/client'
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+// import { getProductBySlug } from '@/lib/actions'
 export default function ProductCard({product}: {product:Product}) {
   return (
-    <div className="border border-gray-400 p-4 rounded-lg shadow-md">
+    <Card className='pt-0 overflow-hidden' 
+    // onClick={async () => console.log(await getProductBySlug(product.slug))}
+    >
     {/* <img src={product.image} alt={product.name} className="w-full h-75 object-cover object-center mb-4" /> */}
-    <div className="relative aspect-video w-full h-75 mb-4">
+    <div className="relative aspect-video ">
       {product.image && (
         <Image
           src={product.image}
@@ -21,11 +26,13 @@ export default function ProductCard({product}: {product:Product}) {
         />
       )}
   </div>
-      <h2 className="text-xl font-bold">{product.name}</h2>
-      <p className="text-gray-600">{product.description}</p>
-      {/* <p className="text-lg font-semibold">{formatPrice(product.price)}</p> */}
-      <p className="text-lg font-semibold">{formatPrice(product.price)}</p>
-
-    </div>
+  <CardHeader>
+    <CardTitle>{product.name}</CardTitle>
+    <CardDescription>{product.description}</CardDescription>
+  </CardHeader>
+  <CardFooter>
+    <p>{formatPrice(product.price)}</p>
+  </CardFooter>
+    </Card>
   )
 }
