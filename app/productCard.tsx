@@ -5,13 +5,15 @@ import Image from 'next/image'
 import { formatPrice } from '@/lib/utils'
 import { Product } from './generated/prisma/client'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import Link from 'next/link'
 // import { getProductBySlug } from '@/lib/actions'
 export default function ProductCard({product}: {product:Product}) {
   return (
-    <Card className='pt-0 overflow-hidden' 
-    // onClick={async () => console.log(await getProductBySlug(product.slug))}
-    >
-    {/* <img src={product.image} alt={product.name} className="w-full h-75 object-cover object-center mb-4" /> */}
+    <Link href={`/product/${product.slug}`}>
+      <Card className='pt-0 overflow-hidden' 
+      // onClick={async () => console.log(await getProductBySlug(product.slug))}
+      >
+      {/* <img src={product.image} alt={product.name} className="w-full h-75 object-cover object-center mb-4" /> */}
     <div className="relative aspect-video ">
       {product.image && (
         <Image
@@ -34,5 +36,6 @@ export default function ProductCard({product}: {product:Product}) {
     <p>{formatPrice(product.price)}</p>
   </CardFooter>
     </Card>
+    </Link>
   )
 }

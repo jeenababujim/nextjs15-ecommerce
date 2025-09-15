@@ -14,6 +14,7 @@ import {
 import { Suspense } from "react";
 import ProductSkeleton from "./productSkeleton";
 import { getProductBySlug } from "@/lib/actions";
+import { sleep } from "@/lib/utils";
 type searchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 const pageSize=3;
 async function Products({page}: { page: number }) {
@@ -24,7 +25,7 @@ async function Products({page}: { page: number }) {
     take: pageSize,
     orderBy: {id: 'asc'}
   });
- await new Promise((resolve) => setTimeout(resolve, 3000));
+  await sleep(3000);
 
  return(
    <>
