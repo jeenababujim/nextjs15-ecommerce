@@ -1,3 +1,4 @@
+import Breadcrumbs from '@/components/breadcrumbs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -42,9 +43,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     if (!product) {
        notFound();
     }
-    await sleep(2000);
+    
+    const breadcrumbs = [
+        
+        { label: 'Products', href: '/' },
+        { label: product.category.name, href: `/category/${product.category.slug}`},
+        { label: product.name, href: `/product/${product.slug}`, active: true },
+    ];
+     await sleep(2000);
   return (
-   <main className='container mx-auto p-4'>
+   <main className='container mx-auto py-4'>
+    <Breadcrumbs items={breadcrumbs} />
     <Card className='max-w-3xl mx-auto'>
         <CardContent className='p-6 grid grid-cols-1 md:grid-cols-2 gap-4'>
           
@@ -55,7 +64,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 fill 
                 priority
                sizes='(max-width: 768px) 100vw,50vw' 
-               className='object-cover'/>
+               className='object-cover'
+               />
               )}
             </div>
            

@@ -9,8 +9,8 @@ export default function Loading() {
     //    <span className="sr-only">Loading...</span>
     //    </div>
     // </div>
-     <main className="container mx-auto p-4">
-          <h1 className="text-3xl font-bold mb-6">Home Page</h1>
+     <main className="container mx-auto py-4">
+        
           <p>showing 5 products</p>
           <ProductSkeleton/>
         </main>

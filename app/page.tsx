@@ -15,6 +15,7 @@ import { Suspense } from "react";
 import ProductSkeleton from "./productSkeleton";
 import { getProductBySlug } from "@/lib/actions";
 import { sleep } from "@/lib/utils";
+import Breadcrumbs from "@/components/breadcrumbs";
 type searchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 const pageSize=3;
 async function Products({page}: { page: number }) {
@@ -29,7 +30,7 @@ async function Products({page}: { page: number }) {
 
  return(
    <>
-      <p>showing {products.length} products</p>
+ 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"> 
         {products.map((product: Product) => (
           <ProductCard key={product.id} product={product} />
@@ -50,8 +51,8 @@ export default async function HomePage(props: { searchParams: searchParams }) {
   // Simulate a 1 second delay for demo purposes
   
   return (
-    <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Home Page</h1>
+    <main className="container mx-auto py-4">
+      <Breadcrumbs items={[{ label: 'Home', href: '/' }]} />
      <Suspense key={page} fallback={<ProductSkeleton/>}> 
       <Products page={page}/>
      </Suspense>
