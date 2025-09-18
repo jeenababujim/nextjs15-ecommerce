@@ -4,19 +4,18 @@ import { prisma } from '@/lib/prisma';
 import { sleep } from '@/lib/utils';
 
 import React, { Suspense } from 'react'
-import ProductCard from '../productCard';
-import { Prisma, Product } from '../generated/prisma/client';
+import ProductCard from '../../productCard';
+import { Prisma, Product } from '../../generated/prisma/client';
 import ProductSkeleton from '@/components/productSkeleton';
-type searchPageProps={
-    searchParams:Promise<{query:string}> | undefined    
+type categoryPageProps={
+    params:Promise<{slug:string}>    
 }
-async function Products({query}: { query: string }) {
+async function Products({slug}: { slug: string }) {
     const products = await prisma.product.findMany({
 where:{
-OR: [
-  { name: { contains: query, mode: 'insensitive' } },
-  { description: { contains: query, mode: 'insensitive' } }
-]
+category:{
+    slug
+}
 },
 take:18
   });
@@ -38,20 +37,28 @@ if(products.length===0){
   //return products;
 }
 
-export default async function SearchPage({searchParams}: searchPageProps) {
-  const params = await searchParams;
-  const query = params?.query.trim() ?? "";
+export default async function CategoryPage({params}: categoryPageProps) {
+  const slug = await params;
+  const category=await prisma.category.findUnique({
+    where:{slug:slug?.slug},
+    select:{
+        name:true,
+        slug:true
+
+    }
+  })
+//   const slug = category?.name ?? "";
   const breadcrumbs = [
     { label: 'Products', href: '/' },
-    { label: `Results for query "${query}"`, href: `/search?query=${encodeURIComponent(query)}`, active: true }
+    { label: category?.name ?? '', href: `/search${category?.slug ? `/${category.slug}` : ''}`, active: true }
   ];
 
   return (
     <main className='container mx-auto py-4'>
         <Breadcrumbs items={breadcrumbs} />
-      <Suspense key={query} fallback={<ProductSkeleton/>}>
-      <Products query={query} />
-.      </Suspense>
+<Suspense key={slug.slug} fallback={<ProductSkeleton/>}>
+<Products slug={slug.slug} />
+</Suspense>
     </main>
   )
 }

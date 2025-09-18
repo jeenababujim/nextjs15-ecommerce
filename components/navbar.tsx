@@ -6,9 +6,9 @@ import { ModeToggle } from './mode-toggle'
 import MobileNav from './mobile-nav'
 import Menu from './menu'
 import SearchInput from './search-input'
-export const categories=[{id:1,name:'Electronics',slug:'electronics',href:'/product/electronics'},
-{id:2,name:'Clothing',slug:'clothing',href:'/product/clothing'},
-{id:3,name:'Home',slug:'home',href:'/product/home'},
+export const categories=[{id:1,name:'Electronics',slug:'electronics',href:'/search/electronics'},
+{id:2,name:'Clothing',slug:'clothing',href:'/search/clothing'},
+{id:3,name:'Home',slug:'home',href:'/search/home'},
 
 ]
 
