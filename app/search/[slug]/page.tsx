@@ -7,16 +7,27 @@ import React, { Suspense } from 'react'
 import ProductCard from '../../productCard';
 import { Prisma, Product } from '../../generated/prisma/client';
 import ProductSkeleton from '@/components/productSkeleton';
+import Link from 'next/link';
 type categoryPageProps={
     params:Promise<{slug:string}>    
+    searchParams:Promise<{sort:string}>
 }
-async function Products({slug}: { slug: string }) {
+async function Products({slug,sort}: { slug: string, sort: string }) {
+  let orderBy: Record<string, "asc" | "desc"> | undefined;
+  if(sort=="price_asc"){
+    orderBy={price:"asc"}
+  }
+  else if(sort=="price_desc"){
+    orderBy={price:"desc"}
+  } 
+
     const products = await prisma.product.findMany({
 where:{
 category:{
     slug
 }
 },
+...(orderBy?{orderBy}:{}),
 take:18
   });
   //await sleep(2000);
@@ -37,10 +48,11 @@ if(products.length===0){
   //return products;
 }
 
-export default async function CategoryPage({params}: categoryPageProps) {
-  const slug = await params;
+export default async function CategoryPage({params,searchParams}: categoryPageProps) {
+  const {slug} = await params;
+  const {sort} = await searchParams;
   const category=await prisma.category.findUnique({
-    where:{slug:slug?.slug},
+    where:{slug:slug},
     select:{
         name:true,
         slug:true
@@ -56,8 +68,13 @@ export default async function CategoryPage({params}: categoryPageProps) {
   return (
     <main className='container mx-auto py-4'>
         <Breadcrumbs items={breadcrumbs} />
-<Suspense key={slug.slug} fallback={<ProductSkeleton/>}>
-<Products slug={slug.slug} />
+        <div className='flex gap-3 text-sm mb-8'>
+<Link href={`/search/${slug}?sort=latest`} className={sort==="latest"?"font-bold":"font-normal"}>Latest</Link>
+<Link href={`/search/${slug}?sort=price_asc`} className={sort==="price_asc"?"font-bold":"font-normal"}>Price Low to High</Link>
+<Link href={`/search/${slug}?sort=price_desc`} className={sort==="price_desc"?"font-bold":"font-normal"}>Price High to Low</Link>
+        </div>
+<Suspense key={`search-${slug}-${sort}`} fallback={<ProductSkeleton/>}>
+<Products slug={slug} sort={sort} />
 </Suspense>
     </main>
   )
