@@ -8,45 +8,47 @@ import ProductCard from '../../productCard';
 import { Prisma, Product } from '../../generated/prisma/client';
 import ProductSkeleton from '@/components/productSkeleton';
 import Link from 'next/link';
+import CategorySidebar from '@/components/category-sidebar';
+import ProductListServerWrapper from '@/components/productListServerWrapper';
 type categoryPageProps={
     params:Promise<{slug:string}>    
     searchParams:Promise<{sort:string}>
 }
-async function Products({slug,sort}: { slug: string, sort: string }) {
-  let orderBy: Record<string, "asc" | "desc"> | undefined;
-  if(sort=="price_asc"){
-    orderBy={price:"asc"}
-  }
-  else if(sort=="price_desc"){
-    orderBy={price:"desc"}
-  } 
+// async function Products({slug,sort}: { slug: string, sort: string }) {
+//   let orderBy: Record<string, "asc" | "desc"> | undefined;
+//   if(sort=="price_asc"){
+//     orderBy={price:"asc"}
+//   }
+//   else if(sort=="price_desc"){
+//     orderBy={price:"desc"}
+//   } 
 
-    const products = await prisma.product.findMany({
-where:{
-category:{
-    slug
-}
-},
-...(orderBy?{orderBy}:{}),
-take:18
-  });
-  //await sleep(2000);
-  console.log(products);
-if(products.length===0){
-  return <div className='text-center text-muted-foreground'>No products found</div>
-}
- return(
-   <>
+//     const products = await prisma.product.findMany({
+// where:{
+// category:{
+//     slug
+// }
+// },
+// ...(orderBy?{orderBy}:{}),
+// take:18
+//   });
+//   //await sleep(2000);
+//   console.log(products);
+// if(products.length===0){
+//   return <div className='text-center text-muted-foreground'>No products found</div>
+// }
+//  return(
+//    <>
  
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"> 
-        {products.map((product: Product) => (
-          <ProductCard key={product.id} product={product} />
-        ))} 
-      </div>
-  </>
- )
-  //return products;
-}
+//       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"> 
+//         {products.map((product: Product) => (
+//           <ProductCard key={product.id} product={product} />
+//         ))} 
+//       </div>
+//   </>
+//  )
+//   //return products;
+// }
 
 export default async function CategoryPage({params,searchParams}: categoryPageProps) {
   const {slug} = await params;
@@ -68,14 +70,26 @@ export default async function CategoryPage({params,searchParams}: categoryPagePr
   return (
     <main className='container mx-auto py-4'>
         <Breadcrumbs items={breadcrumbs} />
-        <div className='flex gap-3 text-sm mb-8'>
+        {/* <div className='flex gap-3 text-sm mb-8'>
 <Link href={`/search/${slug}?sort=latest`} className={sort==="latest"?"font-bold":"font-normal"}>Latest</Link>
 <Link href={`/search/${slug}?sort=price_asc`} className={sort==="price_asc"?"font-bold":"font-normal"}>Price Low to High</Link>
 <Link href={`/search/${slug}?sort=price_desc`} className={sort==="price_desc"?"font-bold":"font-normal"}>Price High to Low</Link>
-        </div>
+        </div> */}
+
+
+
+{/* <div className='flex gap-4'> 
+<div className='flex-1'>     */}
+
 <Suspense key={`search-${slug}-${sort}`} fallback={<ProductSkeleton/>}>
-<Products slug={slug} sort={sort} />
+{/* <Products slug={slug} sort={sort} /> */}
+<ProductListServerWrapper params={{slug,sort}} /> 
 </Suspense>
+
+{/* </div> 
+</div> */}
+
+
     </main>
   )
 }

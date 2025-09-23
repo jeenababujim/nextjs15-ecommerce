@@ -16,30 +16,31 @@ import ProductSkeleton from "./productSkeleton";
 import { getProductBySlug } from "@/lib/actions";
 import { sleep } from "@/lib/utils";
 import Breadcrumbs from "@/components/breadcrumbs";
+import ProductListServerWrapper from "@/components/productListServerWrapper";
 type searchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 const pageSize=3;
-async function Products({page}: { page: number }) {
+// async function Products({page}: { page: number }) {
  
- const skip=(page-1)*pageSize;
-    const products = await prisma.product.findMany({
-    skip: skip,
-    take: pageSize,
-    orderBy: {id: 'asc'}
-  });
-  await sleep(3000);
+//  const skip=(page-1)*pageSize;
+//     const products = await prisma.product.findMany({
+//     skip: skip,
+//     take: pageSize,
+//     orderBy: {id: 'asc'}
+//   });
+//   await sleep(3000);
 
- return(
-   <>
+//  return(
+//    <>
  
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"> 
-        {products.map((product: Product) => (
-          <ProductCard key={product.id} product={product} />
-        ))} 
-      </div>
-  </>
- )
-  //return products;
-}
+//       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"> 
+//         {products.map((product: Product) => (
+//           <ProductCard key={product.id} product={product} />
+//         ))} 
+//       </div>
+//   </>
+//  )
+//   //return products;
+// }
 
 
 export default async function HomePage(props: { searchParams: searchParams }) {
@@ -54,7 +55,8 @@ export default async function HomePage(props: { searchParams: searchParams }) {
     <main className="container mx-auto py-4">
       <Breadcrumbs items={[{ label: 'Home', href: '/' }]} />
      <Suspense key={page} fallback={<ProductSkeleton/>}> 
-      <Products page={page}/>
+      {/* <Products page={page}/> */}
+      <ProductListServerWrapper params={{page,pageSize}} />
      </Suspense>
   <Pagination className="mt-8 flex justify-center">
   <PaginationContent>

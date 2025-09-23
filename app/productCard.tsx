@@ -19,9 +19,10 @@ export default function ProductCard({product}: {product:Product}) {
         <Image
           src={product.image}
           alt={product.name}
-          className="object-cover"
+          className="object-cover "
           fill
           sizes={"(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
+          
           //  priority
           loading='lazy'
           quality={75}
@@ -30,7 +31,7 @@ export default function ProductCard({product}: {product:Product}) {
   </div>
   <CardHeader>
     <CardTitle>{product.name}</CardTitle>
-    <CardDescription>{product.description}</CardDescription>
+    <CardDescription className='truncate text-sm font-medium'>{product.description}</CardDescription>
   </CardHeader>
   <CardFooter>
     <p>{formatPrice(product.price)}</p>
