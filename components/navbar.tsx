@@ -1,11 +1,13 @@
 import Link from 'next/link'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Button } from './ui/button'
 import {  Search, ShoppingCart } from 'lucide-react'
 import { ModeToggle } from './mode-toggle'
 import MobileNav from './mobile-nav'
 import Menu from './menu'
 import SearchInput from './search-input'
+import CartIndicator from './cart-indicator'
+import CartIndicatorSkeleton from './cart-indicator-skelton'
 export const categories=[{id:1,name:'Electronics',slug:'electronics',href:'/search/electronics'},
 {id:2,name:'Clothing',slug:'clothing',href:'/search/clothing'},
 {id:3,name:'Home',slug:'home',href:'/search/home'},
@@ -39,11 +41,15 @@ export default function Navbar() {
         <div className='flex items-center gap-0'>
         
        
-        <Button variant='ghost' size='icon' asChild>
+        {/* <Button variant='ghost' size='icon' asChild>
             <Link href='/cart'>
                 <ShoppingCart className='h-5 w-5'/>
             </Link>
-        </Button>
+        </Button> */}
+        <Suspense fallback={<CartIndicatorSkeleton/>}>
+        <CartIndicator />
+        </Suspense>
+      
 
         <ModeToggle />
        

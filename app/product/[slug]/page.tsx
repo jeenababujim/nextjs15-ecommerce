@@ -1,3 +1,4 @@
+import AddToCartButton from '@/components/add-to-cart-button';
 import Breadcrumbs from '@/components/breadcrumbs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -97,12 +98,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
         </div>
         <Separator className="my-4" />
-        <div>
+        {/* <div>
             <Button disabled={product.inventory === 0} className='w-full'>
             <ShoppingCartIcon className='mr-1 w-4 h-4'/>
             {product.inventory > 0 ? 'Add to Cart' : 'Out of Stock'}
             </Button>
-        </div>
+        </div> */}
+        <AddToCartButton product={product} />
         </div>
         </CardContent>
     </Card>
