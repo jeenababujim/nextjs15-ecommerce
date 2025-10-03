@@ -48,7 +48,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     const breadcrumbs = [
         
         { label: 'Products', href: '/' },
-        { label: product.category.name, href: `/category/${product.category.slug}`},
+        { label: product.category.name, href: `/search/${product.category.slug}`},
         { label: product.name, href: `/product/${product.slug}`, active: true },
     ];
      await sleep(2000);

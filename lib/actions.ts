@@ -69,6 +69,10 @@ export type ShoppingCart=CartWithProducts &{
     size:number;
     subtotal:number;
 }
+export type CartItemWithProducts=Prisma.CartItemGetPayload<{
+    include:{product:true}
+
+}>
 async function findCartFromCookies():Promise<CartWithProducts | null> {
     const cartId=(await cookies()).get("cartId")?.value;
     console.log("cartid cookies===================",cartId);
@@ -87,7 +91,8 @@ return unstable_cache(async (id:string) => {
  return await prisma.cart.findUnique({
         where:{id},
         include:{
-            items:{include:{product:true}}
+            items:{include:{product:true},orderBy:{createdAt:"desc"},}
+            
 
         }
     })
@@ -101,15 +106,22 @@ return unstable_cache(async (id:string) => {
 export async function getCart(): Promise < ShoppingCart | null  > {
     const cartId=(await cookies()).get("cartId")?.value;
     const cart=await findCartFromCookies();
+    console.log("cokkies-------------",cart);
     if(!cart) return null;
-    return {
-        ...cart,
-        size: cart.items.length,
-        subtotal: cart.items.reduce (
-            (total, item) => total * item.product.price * item.quantity,0
-        ),
+    // return {
+    //     ...cart,
+    //     size: cart.items.length,
+    //     subtotal: cart.items.reduce((total, item) => total * item.product.price * item.quantity,0),
     
-    }
+    // }
+     return {
+    ...cart,
+    size: cart.items.length,
+    subtotal: cart.items.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    ),
+  };
 }
 
 export async function getOrCreateCart():Promise <CartWithProducts> {  
@@ -156,4 +168,46 @@ export async function addToCart(productId:string,quantity:number=1){
         })
     }
     revalidateTag(`cart-${cart.id}`)
+}
+
+export async function setProductQuantity(productId:string,quantity:number){
+if(quantity<0){
+    throw new Error("Quantity must be at least 0") ;
+}
+const cart=await findCartFromCookies(); 
+if(!cart){
+    throw new Error("cart not found");
+}
+const existingItem=cart.items.find((item) =>item.productId===productId);
+if(!existingItem){
+    throw new Error("item not found in the cart") ;
+}
+//TODO:product inventory not exceeded
+try{
+    if(quantity==0){
+        await  prisma.cartItem.deleteMany({
+            where:{
+                cartId:cart.id,
+                productId
+            },
+        })
+   
+    }else{
+await prisma.cartItem.updateMany({
+    where:{cartId:cart.id,productId},
+    data:{quantity},
+})
+    }
+     revalidateTag(`cart-${cart.id}`);
+}catch(error){
+console.log("Error updating cart item quantity:",error) ;
+throw new Error("Failed to update cart item quantity") ;
+}
+
+
+
+
+
+
+
 }

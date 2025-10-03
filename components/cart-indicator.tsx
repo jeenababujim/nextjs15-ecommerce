@@ -7,9 +7,7 @@ import { Button } from './ui/button';
 
 export default async function CartIndicator() {
     const cart=await getCart();
-     console.log("cart=======", cart);
     const cartSize=cart?.size?? 0;
-    console.log("size=======", cartSize);
   return (
 
     
