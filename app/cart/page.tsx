@@ -31,14 +31,31 @@
 
 import CartEntry from '@/components/cart-entry'
 import CartSummary from '@/components/cart-summary'
+import { Button } from '@/components/ui/button'
 import { getCart } from '@/lib/actions'
+import { processCheckout, processCheckoutResponse } from '@/lib/order'
 import { sleep } from '@/lib/utils'
+
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
 export default async function CartPage() {
     await sleep(3000)
     const cart = await getCart()
-
+const handleCheckout=async()=>{
+    "use server";
+    let result: processCheckoutResponse | null = null
+    try{
+         result=await processCheckout();
+        
+    }catch(error){
+        console.log("Checkout error:",error)
+    }
+    if(result && result.sessionUrl){
+            redirect(result.sessionUrl);
+        }
+}
     return (
         <main className="container mx-auto py-8 px-4">
             {!cart || cart.items.length === 0 ? (
@@ -60,7 +77,13 @@ export default async function CartPage() {
                     {/* Cart Summary */}
                     <div className="w-full lg:w-96">
                         <CartSummary />
+                        <form action={handleCheckout}>
+                        <Button size="lg"  className="mt-6 w-full">
+                            Proceed to Checkout
+                        </Button>
+                        </form>
                     </div>
+                     
                 </div>
             )}
         </main>

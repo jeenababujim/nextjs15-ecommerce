@@ -14,9 +14,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+  id    String  @id @default(cuid())
+   email String @unique
+   password  String
+   name  String?
+   role String @default("user")
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+   orders Order[]
 }
 model Product {
   id          String   @id @default(cuid())
@@ -65,10 +70,12 @@ model Order{
   total Float
   status String @default("pending")
   items OrderItem[]
-  stripeSessionId String
-  stripePaymentInetentId String
+  stripeSessionId String?
+  stripePaymentInetentId String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId String?
+  user  User? @relation(fields:[userId],references:[id],onDelete:SetNull)
 
 }
 model OrderItem{
